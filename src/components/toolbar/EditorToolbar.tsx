@@ -7,6 +7,7 @@ import type {
   RectangleElement,
   CircleElement,
 } from "../../types/element";
+import { exportToHTML } from "../../utils/htmlExporter";
 
 export function EditorToolbar() {
   const tool = useEditorStore((state) => state.tool);
@@ -24,11 +25,14 @@ export function EditorToolbar() {
   const redo = useEditorStore((state) => state.redo);
   const history = useEditorStore((state) => state.history);
   const historyIndex = useEditorStore((state) => state.historyIndex);
-  const document = useEditorStore((state) => state.document);
 
   const canUndo = historyIndex > 0;
   const canRedo = historyIndex < history.length - 1;
   const hasSelection = selectedElementIds.length > 0;
+
+  const mode = useEditorStore((state) => state.mode);
+  const setMode = useEditorStore((state) => state.setMode);
+  const document = useEditorStore((state) => state.document);
 
   const addText = () => {
     const textElement: TextElement = {
@@ -53,6 +57,8 @@ export function EditorToolbar() {
       fontStyle: "normal",
       fill: "#ffffff",
       align: "left",
+      inAnimation: { type: 'none', duration: 0, delay: 0 },
+      outAnimation: { type: 'none', duration: 0, delay: 0 }
     };
     addElement(textElement);
   };
@@ -78,6 +84,10 @@ export function EditorToolbar() {
       stroke: "#1e40af",
       strokeWidth: 2,
       cornerRadius: 0,
+      
+      inAnimation: { type: 'none', duration: 0, delay: 0 },
+      
+      outAnimation: { type: 'none', duration: 0, delay: 0 }
     };
     addElement(rectElement);
   };
@@ -103,8 +113,10 @@ export function EditorToolbar() {
       fill: "#ef4444",
       stroke: "#991b1b",
       strokeWidth: 2,
+      
+      inAnimation: { type: 'none', duration: 0, delay: 0 },
+      outAnimation: { type: 'none', duration: 0, delay: 0 }
     };
-    addElement(circleElement);
   };
 
   const handleBringToFront = () => {
@@ -141,6 +153,7 @@ export function EditorToolbar() {
           </div>
         </div>
 
+
         <div className="toolbar-section">
           <h3>Actions</h3>
           <div className="tool-buttons">
@@ -176,6 +189,24 @@ export function EditorToolbar() {
               title="Send to Back"
             >
               ⬇️
+            </button>
+          </div>
+        </div>
+        <div className="toolbar-section">
+          <h3>Preview & Export</h3>
+          <div className="tool-buttons">
+            <button
+              className={mode === 'preview' ? "active" : ""}
+              onClick={() => setMode(mode === 'edit' ? 'preview' : 'edit')}
+              title={mode === 'edit' ? "Play Animation" : "Stop Animation"}
+            >
+              {mode === 'edit' ? "▶️" : "Lb"}
+            </button>
+            <button
+              onClick={() => exportToHTML(document)}
+              title="Export HTML"
+            >
+              📤
             </button>
           </div>
         </div>

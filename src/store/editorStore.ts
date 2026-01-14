@@ -4,10 +4,7 @@ import { create } from 'zustand';
 import { nanoid } from 'nanoid';
 import type { 
   GraphicElement, 
-  GraphicDocument, 
-  TextElement, 
-  RectangleElement, 
-  CircleElement 
+  GraphicDocument
 } from '../types/element';
 
 interface EditorState {
@@ -16,6 +13,7 @@ interface EditorState {
   selectedElementIds: string[];
   tool: 'select' | 'text' | 'rectangle' | 'circle';
   zoom: number;
+  mode: 'edit' | 'preview'; // Added for Preview Mode
   
   // History
   history: GraphicDocument[];
@@ -33,6 +31,7 @@ interface EditorState {
   sendToBack: (id: string) => void;
   setTool: (tool: 'select' | 'text' | 'rectangle' | 'circle') => void;
   setZoom: (zoom: number) => void;
+  setMode: (mode: 'edit' | 'preview') => void; // Added action
   
   // History
   undo: () => void;
@@ -57,15 +56,25 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   selectedElementIds: [],
   tool: 'select',
   zoom: 1,
+  mode: 'edit', // Default to editor mode
   history: [],
   historyIndex: -1,
   
   // Actions
-  addElement: (element) => {
+addElement: (element) => {
+    // UPDATED: Initialize both In and Out animations
+    const defaultAnim = { type: 'none' as const, duration: 1, delay: 0 };
+    
+    const elementWithAnimation = {
+      ...element,
+      inAnimation: element.inAnimation || defaultAnim,
+      outAnimation: element.outAnimation || defaultAnim
+    };
+
     set((state) => ({
       document: {
         ...state.document,
-        elements: [...state.document.elements, element],
+        elements: [...state.document.elements, elementWithAnimation],
         updatedAt: new Date()
       },
       selectedElementIds: [element.id]
@@ -157,6 +166,10 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   
   setZoom: (zoom) => {
     set({ zoom: Math.max(0.1, Math.min(3, zoom)) });
+  },
+
+  setMode: (mode) => {
+    set({ mode });
   },
   
   // History

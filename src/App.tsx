@@ -2,9 +2,13 @@ import { EditorToolbar } from './components/toolbar/EditorToolbar';
 import { CanvasEditor } from './components/canvas/CanvasEditor';
 import { LayersPanel } from './components/panels/LayersPanel';
 import { PropertiesPanel } from './components/panels/PropertiesPanel';
+import { PreviewPlayer } from './components/preview/PreviewPlayer';
+import { useEditorStore } from './store/editorStore';
 import './App.css';
 
 function App() {
+  const mode = useEditorStore((state) => state.mode);
+
   return (
     <div className="app">
       <EditorToolbar />
@@ -15,7 +19,7 @@ function App() {
         </div>
         
         <div className="canvas-area">
-          <CanvasEditor />
+          {mode === 'edit' ? <CanvasEditor /> : <PreviewPlayer />}
         </div>
         
         <div className="right-sidebar">

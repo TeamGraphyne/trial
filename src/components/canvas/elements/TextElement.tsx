@@ -1,8 +1,10 @@
 // src/components/canvas/elements/TextElement.tsx
 
+import { useRef } from 'react'; // Add useRef
 import { Text } from 'react-konva';
 import type { TextElement as TextElementType } from '../../../types/element';
 import Konva from 'konva';
+import { useElementAnimation } from '../../../hooks/useElementAnimation';
 
 interface TextElementProps {
   element: TextElementType;
@@ -16,7 +18,8 @@ export function TextElement({
   isSelected, 
   onSelect, 
   onTransform 
-}: TextElementProps) {
+}: TextElementProps) {const shapeRef = useRef<Konva.Text>(null);
+  useElementAnimation(element, shapeRef as React.RefObject<Konva.Shape | Konva.Group>);
   
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
     const addToSelection = e.evt.ctrlKey || e.evt.metaKey;

@@ -1,8 +1,10 @@
 // src/components/canvas/elements/CircleElement.tsx
 
+import { useRef } from 'react'; // Add useRef
 import { Circle } from 'react-konva';
 import type { CircleElement as CircleElementType } from '../../../types/element';
 import Konva from 'konva';
+import { useElementAnimation } from '../../../hooks/useElementAnimation';
 
 interface CircleElementProps {
   element: CircleElementType;
@@ -17,6 +19,9 @@ export function CircleElement({
   onSelect, 
   onTransform 
 }: CircleElementProps) {
+  
+  const shapeRef = useRef<Konva.Circle>(null);
+  useElementAnimation(element, shapeRef as React.RefObject<Konva.Shape | Konva.Group>);
   
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
     const addToSelection = e.evt.ctrlKey || e.evt.metaKey;
@@ -46,7 +51,7 @@ export function CircleElement({
   };
   
   return (
-    <Circle
+    <Circle ref={shapeRef}
       id={element.id}
       x={element.x + element.radius}
       y={element.y + element.radius}

@@ -1,8 +1,9 @@
 // src/components/canvas/elements/RectangleElement.tsx
-
+import { useRef } from 'react'; // Add useRef
 import { Rect } from 'react-konva';
 import type { RectangleElement as RectangleElementType } from '../../../types/element';
 import Konva from 'konva';
+import { useElementAnimation } from '../../../hooks/useElementAnimation';
 
 interface RectangleElementProps {
   element: RectangleElementType;
@@ -17,6 +18,9 @@ export function RectangleElement({
   onSelect, 
   onTransform 
 }: RectangleElementProps) {
+  const shapeRef = useRef<Konva.Rect>(null);
+  
+  useElementAnimation(element, shapeRef as React.RefObject<Konva.Shape | Konva.Group>);
   
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
     const addToSelection = e.evt.ctrlKey || e.evt.metaKey;
@@ -48,7 +52,7 @@ export function RectangleElement({
   };
   
   return (
-    <Rect
+    <Rect ref={shapeRef}
       id={element.id}
       x={element.x}
       y={element.y}

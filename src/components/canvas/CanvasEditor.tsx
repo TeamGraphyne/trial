@@ -72,7 +72,7 @@ export function CanvasEditor() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Delete
-      if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (e.key === 'Delete') {
         e.preventDefault();
         deleteSelectedElements();
       }

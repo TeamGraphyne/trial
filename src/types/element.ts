@@ -1,6 +1,10 @@
-// src/types/element.ts
-
 export type ElementType = 'text' | 'rectangle' | 'circle' | 'image';
+
+export interface AnimationConfig {
+  type: 'none' | 'fadeIn' | 'slideRight' | 'slideLeft' | 'scaleUp';
+  duration: number;
+  delay: number;
+}
 
 export interface BaseElement {
   id: string;
@@ -26,7 +30,13 @@ export interface BaseElement {
   
   // Selection
   draggable: boolean;
+
+  // UPDATED: Separate In and Out animations
+  inAnimation?: AnimationConfig;
+  outAnimation?: AnimationConfig;
 }
+
+// ... (Rest of the file remains unchanged: TextElement, RectangleElement, etc.)
 
 export interface TextElement extends BaseElement {
   type: 'text';
@@ -65,14 +75,12 @@ export type GraphicElement =
   | CircleElement 
   | ImageElement;
 
-// Canvas configuration
 export interface CanvasConfig {
   width: number;
   height: number;
   backgroundColor: string;
 }
 
-// Graphic document (whole project)
 export interface GraphicDocument {
   id: string;
   name: string;
